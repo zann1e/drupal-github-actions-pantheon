@@ -36,7 +36,7 @@ jobs:
           terminus env:delete $PANTHEON_SITE_ID.$MULTIDEV_ENV --yes --delete-branch || true
           terminus multidev:create $PANTHEON_SITE_ID.dev $MULTIDEV_ENV
           terminus connection:set $PANTHEON_SITE_ID.$MULTIDEV_ENV git
-          terminus env:push --site=$PANTHEON_SITE_ID --env=$MULTIDEV_ENV --branch=${GITHUB_SHA}
+          terminus build:env:push --site=$PANTHEON_SITE_ID --env=$MULTIDEV_ENV --branch=${GITHUB_SHA}
 
       - name: Delete Multidev Environment
         if: github.event.action == 'closed'
