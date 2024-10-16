@@ -23,7 +23,7 @@ jobs:
           chmod +x terminus
           sudo mv terminus /usr/local/bin/
 
-      - name: Install Terminus
+      - name: Install Terminus Build Tools
         run: |
           terminus self:plugin:install terminus-build-tools-plugin
 
