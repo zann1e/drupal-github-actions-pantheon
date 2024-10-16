@@ -1,0 +1,40 @@
+name: Pantheon Multidev Environments
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened, closed]
+
+jobs:
+  pantheon-multidev:
+    runs-on: ubuntu-latest
+
+    env:
+      PANTHEON_SITE_ID: ${{ secrets.PANTHEON_SITE_ID }}
+      PANTHEON_MACHINE_TOKEN: ${{ secrets.PANTHEON_MACHINE_TOKEN }}
+      MULTIDEV_ENV: pr-${{ github.event.number }}
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Install Terminus
+        run: |
+          curl -L https://github.com/pantheon-systems/terminus/releases/download/3.0.2/terminus.phar -o terminus
+          chmod +x terminus
+          sudo mv terminus /usr/local/bin/
+
+      - name: Authenticate with Pantheon
+        run: terminus auth:login --machine-token="$PANTHEON_MACHINE_TOKEN"
+
+      - name: Create or Update Multidev Environment
+        if: github.event.action != 'closed'
+        run: |
+          terminus env:delete $PANTHEON_SITE_ID.$MULTIDEV_ENV --yes --delete-branch || true
+          terminus multidev:create $PANTHEON_SITE_ID.dev $MULTIDEV_ENV
+          terminus connection:set $PANTHEON_SITE_ID.$MULTIDEV_ENV git
+          terminus env:push --site=$PANTHEON_SITE_ID --env=$MULTIDEV_ENV --branch=${GITHUB_SHA}
+
+      - name: Delete Multidev Environment
+        if: github.event.action == 'closed'
+        run: |
+          terminus env:delete $PANTHEON_SITE_ID.$MULTIDEV_ENV --yes --delete-branch
