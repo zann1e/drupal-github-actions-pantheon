@@ -33,10 +33,15 @@ jobs:
       - name: Create or Update Multidev Environment
         if: github.event.action != 'closed'
         run: |
-          terminus build:env:delete $PANTHEON_SITE_ID.$MULTIDEV_ENV --yes --delete-branch || true
+          terminus env:delete $PANTHEON_SITE_ID.$MULTIDEV_ENV --yes --delete-branch || true
           terminus build:env:create $PANTHEON_SITE_ID.dev $MULTIDEV_ENV
           terminus connection:set $PANTHEON_SITE_ID.$MULTIDEV_ENV git
+          git config user.name "$LAST_COMMITTER_NAME"
+          git config user.email "$LAST_COMMITTER_EMAIL"
           terminus build:env:push --site=$PANTHEON_SITE_ID --env=$MULTIDEV_ENV --branch=${GITHUB_SHA}
+          terminus drush $PANTHEON_SITE_ID.$MULTIDEV_ENV updb -y
+          terminus drush $PANTHEON_SITE_ID.$MULTIDEV_ENV cim -y
+          terminus drush $PANTHEON_SITE_ID.$MULTIDEV_ENV updb -y
 
       - name: Delete Multidev Environment
         if: github.event.action == 'closed'
