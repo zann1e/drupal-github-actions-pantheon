@@ -16,8 +16,6 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
-        with:
-          ssh-key: ${{ secrets.SSH_KEY }}
 
       - name: Install Terminus
         run: |
@@ -34,14 +32,29 @@ jobs:
 
       - name: Create or Update Multidev Environment
         if: github.event.action != 'closed'
-        run: |
-          git config --global user.email "you@example.com"
-          git config --global user.name "Your Name"
+        run: |  
           terminus build:env:create $PANTHEON_SITE_ID.dev $MULTIDEV_ENV --yes
-          terminus build:env:push $PANTHEON_SITE_ID.$MULTIDEV_ENV
-          terminus drush $PANTHEON_SITE_ID.$MULTIDEV_ENV updb -y
-          terminus drush $PANTHEON_SITE_ID.$MULTIDEV_ENV cim -y
-          terminus drush $PANTHEON_SITE_ID.$MULTIDEV_ENV updb -y
+
+      - name: Prepare code for deployment
+        if: github.event.action != 'closed'
+        run: |
+          git config --global user.email "github-actions@example.com"
+          git config --global user.name "GitHub Actions"
+          commit_message=$(git log -1 --pretty=%B)
+          rm -rf .git
+          rm -rf .github
+          rm -rf scripts
+          rm -rf web/core/*.txt
+          git init
+          git config --local gc.auto 0
+          git add --force .
+          git commit -m "Automated deploy: $commit_message" >/dev/null
+
+      - name: Push code to Pantheon MultiDev
+        if: github.event.action != 'closed'
+        run: |
+          git remote add pantheon codeserver.dev.d2fe9d28-a99a-432f-963e-aaee6e0ecb15@codeserver.dev.d2fe9d28-a99a-432f-963e-aaee6e0ecb15.drush.in:2222/~/repository.git
+          git push --force pantheon HEAD:$PANTHEON_SITE_ID.dev.$MULTIDEV_ENV
 
       - name: Delete Multidev Environment
         if: github.event.action == 'closed'
