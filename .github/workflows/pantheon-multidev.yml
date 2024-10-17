@@ -15,12 +15,9 @@ jobs:
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v2
-
-      - name: Add SSH key
-        uses: webfactory/ssh-agent@v0.9.0
+        uses: actions/checkout@v4
         with:
-            ssh-private-key: ${{ secrets.SSH_KEY }}
+          ssh-key: ${{ secrets.SSH_KEY }}
 
       - name: Install Terminus
         run: |
