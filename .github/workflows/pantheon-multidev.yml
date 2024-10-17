@@ -38,6 +38,7 @@ jobs:
       - name: Create or Update Multidev Environment
         if: github.event.action != 'closed'
         run: |
+          terminus multidev:delete $PANTHEON_SITE_ID.$MULTIDEV_ENV --yes --delete-branch
           terminus multidev:create $PANTHEON_SITE_ID.dev $MULTIDEV_ENV
    
 
@@ -60,4 +61,4 @@ jobs:
       - name: Delete Multidev Environment
         if: github.event.action == 'closed'
         run: |
-          terminus build:env:delete $PANTHEON_SITE_ID.$MULTIDEV_ENV --yes --delete-branch
+          terminus multidev:delete $PANTHEON_SITE_ID.$MULTIDEV_ENV --yes --delete-branch
