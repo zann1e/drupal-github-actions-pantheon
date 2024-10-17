@@ -1,9 +1,7 @@
-# Put overrides to your pantheon.upstream.yml file here.
-# For more information, see: https://pantheon.io/docs/pantheon-yml/
 api_version: 1
 workflows:
-  sync_code:
+  deploy:
     after:
-        - type: webphp
-          description: Post deployment site updates.
-          script: private/quicksilver/sync_code.php
+      - type: webphp
+        description: Import configuration from .yml files
+        script: private/quicksilver/sync_code.php
