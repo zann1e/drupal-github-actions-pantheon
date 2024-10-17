@@ -54,7 +54,7 @@ jobs:
         if: github.event.action != 'closed'
         run: |
           git remote add pantheon codeserver.dev.d2fe9d28-a99a-432f-963e-aaee6e0ecb15@codeserver.dev.d2fe9d28-a99a-432f-963e-aaee6e0ecb15.drush.in:2222/~/repository.git
-          git push --force pantheon HEAD:$PANTHEON_SITE_ID.dev.$MULTIDEV_ENV
+          git push --force pantheon HEAD:$MULTIDEV_ENV
 
       - name: Delete Multidev Environment
         if: github.event.action == 'closed'
