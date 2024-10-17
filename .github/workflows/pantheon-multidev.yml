@@ -42,12 +42,12 @@ jobs:
           LAST_COMMITTER_EMAIL=`git log -1 --pretty=%ce`
           git config user.name "$LAST_COMMITTER_NAME"
           git config user.email "$LAST_COMMITTER_EMAIL"
-          terminus multidev:create $PANTHEON_SITE_ID.dev $MULTIDEV_ENV --yes
 
       - name: Prepare code for deployment
         if: github.event.action != 'closed'
         run: |
           git log
+          git remote
 
       - name: Delete Multidev Environment
         if: github.event.action == 'closed'
