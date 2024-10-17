@@ -34,6 +34,5 @@ if (file_exists($local_settings)) {
 }
 
 // Define config directories.
-$settings['config_sync_directory'] = dirname(DRUPAL_ROOT) . '/config/' . basename($site_path);
-
+$settings['config_sync_directory'] = dirname(DRUPAL_ROOT) . '/config/';
 $zann = 'testing';
