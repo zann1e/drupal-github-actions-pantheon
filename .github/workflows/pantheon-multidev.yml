@@ -50,7 +50,7 @@ jobs:
           git remote
           git remote add pantheon ssh://codeserver.dev.$PANTHEON_SITE_ID@codeserver.dev.$PANTHEON_SITE_ID.drush.in:2222/~/repository.git
           git remote
-          ssh-keyscan codeserver.dev.$PANTHEON_SITE_ID.drush.in >> ~/.ssh/known_hosts
+          ssh-keyscan codeserver.dev.$PANTHEON_SITE_ID.drush.in
           git push pantheon HEAD:$MULTIDEV_ENV
 
 
