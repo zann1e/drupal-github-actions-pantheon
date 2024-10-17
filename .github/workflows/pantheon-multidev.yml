@@ -17,7 +17,8 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
         with:
-          ref: ${{ github.ref }}
+          ref: ${{ github.event.pull_request.head.ref }}  # or the branch/commit you need
+          fetch-depth: 0  # Fetch the entire history
 
       - name: Add SSH key
         uses: webfactory/ssh-agent@v0.9.0
