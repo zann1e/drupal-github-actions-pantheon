@@ -35,13 +35,12 @@ jobs:
           mkdir -p ~/.ssh
           echo "${{ secrets.SSH_KEY }}" > ~/.ssh/id_rsa.pub
           chmod 600 ~/.ssh/id_rsa.pub
-          ssh-keyscan github.com >> ~/.ssh/known_hosts
           eval "$(ssh-agent -s)"
+          ssh-add $SSH_KEY
 
       - name: Create or Update Multidev Environment
         if: github.event.action != 'closed'
         run: |
-          ssh-add $SSH_KEY
           git config --global user.email "you@example.com"
           git config --global user.name "Your Name"
           terminus build:env:create $PANTHEON_SITE_ID.dev $MULTIDEV_ENV --yes
