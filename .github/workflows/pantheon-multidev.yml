@@ -31,10 +31,6 @@ jobs:
           chmod +x terminus
           sudo mv terminus /usr/local/bin/
 
-      - name: Install Terminus Build Tools
-        run: |
-          terminus self:plugin:install terminus-build-tools-plugin
-
       - name: Authenticate with Pantheon
         run: terminus auth:login --machine-token="$PANTHEON_MACHINE_TOKEN"
 
@@ -59,6 +55,11 @@ jobs:
           ssh-keyscan -p 2222 codeserver.dev.$PANTHEON_SITE_ID.drush.in >> ~/.ssh/known_hosts
           echo 'Pushing code to Pantheon'.
           git push -f pantheon HEAD:$MULTIDEV_ENV
+
+      - name: Run configuration import.
+        if: github.event.action != 'closed'
+        run: |
+          terminus drush $PANTHEON_SITE_ID.$MULTIDEV_ENV -- config:import -y
 
 
       - name: Delete Multidev Environment
