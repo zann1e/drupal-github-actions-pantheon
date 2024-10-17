@@ -11,7 +11,7 @@ jobs:
     env:
       PANTHEON_SITE_ID: ${{ secrets.PANTHEON_SITE_ID }}
       PANTHEON_MACHINE_TOKEN: ${{ secrets.PANTHEON_MACHINE_TOKEN }}
-      MULTIDEV_ENV: ${{ github.ref_name }}
+      MULTIDEV_ENV: pr-${{ github.event.number }}
 
     steps:
       - name: Checkout code
