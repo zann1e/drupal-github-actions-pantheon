@@ -50,6 +50,7 @@ jobs:
           git remote
           git remote add pantheon ssh://codeserver.dev.$PANTHEON_SITE_ID@codeserver.dev.$PANTHEON_SITE_ID.drush.in:2222/~/repository.git || true
           git remote
+          ssh-keygen -R codeserver.dev.$PANTHEON_SITE_ID.drush.in
           echo 'Pushing code to Pantheon'.
           git push -f pantheon HEAD:$MULTIDEV_ENV
 
