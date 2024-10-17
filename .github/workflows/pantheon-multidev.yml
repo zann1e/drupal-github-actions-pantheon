@@ -41,6 +41,8 @@ jobs:
           LAST_COMMIT_MESSAGE=`git log -1 --pretty=%B`
           LAST_COMMITTER_NAME=`git log -1 --pretty=%cn`
           LAST_COMMITTER_EMAIL=`git log -1 --pretty=%ce`
+          echo $LAST_COMMIT_MESSAGE
+          echo $LAST_COMMITTER_EMAIL
           git config user.name "$LAST_COMMITTER_NAME"
           git config user.email "$LAST_COMMITTER_EMAIL"
           terminus build:env:push $PANTHEON_SITE_ID.$MULTIDEV_ENV --message=$LAST_COMMITTER_MESSAGE -y
@@ -48,4 +50,4 @@ jobs:
       - name: Delete Multidev Environment
         if: github.event.action == 'closed'
         run: |
-          terminus env:delete $PANTHEON_SITE_ID.$MULTIDEV_ENV --yes --delete-branch
+          terminus build:env:delete $PANTHEON_SITE_ID.$MULTIDEV_ENV --yes --delete-branch
