@@ -38,22 +38,12 @@ jobs:
       - name: Prepare code for deployment
         if: github.event.action != 'closed'
         run: |
-          git config --global user.email "alex.zani@ffw.com"
-          git config --global user.name "Alex Zani"
-          commit_message=$(git log -1 --pretty=%B)
-          rm -rf .git
-          rm -rf .github
-          rm -rf scripts
-          rm -rf web/core/*.txt
-          git init
-          git add --force .
-          git commit -m "Automated deploy: $commit_message" >/dev/null
-
-      - name: Push code to Pantheon MultiDev
-        if: github.event.action != 'closed'
-        run: |
-          git remote add pantheon codeserver.dev.d2fe9d28-a99a-432f-963e-aaee6e0ecb15@codeserver.dev.d2fe9d28-a99a-432f-963e-aaee6e0ecb15.drush.in:2222/~/repository.git
-          git push --force pantheon HEAD:$MULTIDEV_ENV
+          LAST_COMMIT_MESSAGE=`git log -1 --pretty=%B`
+          LAST_COMMITTER_NAME=`git log -1 --pretty=%cn`
+          LAST_COMMITTER_EMAIL=`git log -1 --pretty=%ce`
+          git config user.name "$LAST_COMMITTER_NAME"
+          git config user.email "$LAST_COMMITTER_EMAIL"
+          terminus build:env:push $PANTHEON_SITE_ID.$MULTIDEV_ENV --message=$LAST_COMMITTER_MESSAGE -y
 
       - name: Delete Multidev Environment
         if: github.event.action == 'closed'
