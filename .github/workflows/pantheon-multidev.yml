@@ -38,14 +38,16 @@ jobs:
       - name: Create or Update Multidev Environment
         if: github.event.action != 'closed'
         run: |
-          LAST_COMMITTER_NAME=`git log -1 --pretty=%cn`
-          LAST_COMMITTER_EMAIL=`git log -1 --pretty=%ce`
-          git config user.name "$LAST_COMMITTER_NAME"
-          git config user.email "$LAST_COMMITTER_EMAIL"
+          terminus multidev:create $PANTHEON_SITE_ID.dev $MULTIDEV_ENV
+   
 
       - name: Prepare code for deployment
         if: github.event.action != 'closed'
         run: |
+          LAST_COMMITTER_NAME=`git log -1 --pretty=%cn`
+          LAST_COMMITTER_EMAIL=`git log -1 --pretty=%ce`
+          git config user.name "$LAST_COMMITTER_NAME"
+          git config user.email "$LAST_COMMITTER_EMAIL"
           git log
           git remote
           git remote add pantheon ssh://codeserver.dev.$PANTHEON_SITE_ID@codeserver.dev.$PANTHEON_SITE_ID.drush.in:2222/~/repository.git || true
