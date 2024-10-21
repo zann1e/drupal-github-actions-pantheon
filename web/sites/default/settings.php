@@ -32,3 +32,7 @@ $local_settings = __DIR__ . "/settings.local.php";
 if (file_exists($local_settings)) {
   include $local_settings;
 }
+
+// Define config directories.
+$settings['config_sync_directory'] = dirname(DRUPAL_ROOT) . '/config/';
+$zann = 'testing';
